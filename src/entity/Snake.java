@@ -7,9 +7,13 @@ import java.awt.Color;
 
 public class Snake {
 
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
+
     private int body_length;
     private List<Segment> segments;
-    private char direction; // 'U' = UP, 'D' = DOWN, 'L' = LEFT, 'R' = RIGHT
+    private Direction direction;
 
     public Snake(){
         segments = new ArrayList<>();
@@ -17,7 +21,8 @@ public class Snake {
     }
 
     public void initializeSnake(){
-        direction = 'R';
+
+        direction = Direction.RIGHT;
         segments.add(new Segment(1,3)); //init position of head
         segments.add(new Segment(1,2)); //init position of body
         segments.add(new Segment(1,1)); //init position of tail
@@ -29,10 +34,10 @@ public class Snake {
 
         //Assuming 0,0 is the top left corner
         switch (direction) {
-            case 'U': headY--; break; //head will go up, because the limit on top is considered to be y=0
-            case 'D': headY++; break;
-            case 'L': headX--; break;
-            case 'R': headX++; break;
+            case UP: headY--; break; //head will go up, because the limit on top is considered to be y=0
+            case DOWN: headY++; break;
+            case LEFT: headX--; break;
+            case RIGHT : headX++; break;
         }
 
         //Move every other body and tail segments
@@ -45,15 +50,9 @@ public class Snake {
 
     }
 
-    public void setDirection(char newDirection) {
-        //Check if new direction is opposite of current direction
-        if ((direction == 'U' && newDirection == 'D') ||
-                (direction == 'D' && newDirection == 'U') ||
-                (direction == 'L' && newDirection == 'R') ||
-                (direction == 'R' && newDirection == 'L')) {
-            return; //Ignore new direction if it is opposite of current direction
-        }
-        direction = newDirection; //Updates direction if it is valid
+    public void setDirection(Direction newDirection) {
+
+        this.direction = newDirection;
     }
 
     public void grow(){
