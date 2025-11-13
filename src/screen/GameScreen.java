@@ -4,6 +4,7 @@ import engine.Core;
 import engine.GameStates;
 import engine.StateMachine;
 import engine.InputManager;
+import engine.FileManager;
 import entity.*;
 
 import java.awt.*;
@@ -11,6 +12,7 @@ import java.awt.*;
 public class GameScreen {
     private final StateMachine states;
     private final InputManager input;
+    private final FileManager fileManager;
 
     private final int unit = 20;
     private final int cols = Core.WIDTH / unit;
@@ -23,9 +25,25 @@ public class GameScreen {
     private Snake snake;
     private Food food;
 
-    public GameScreen(StateMachine states, InputManager input) {
+    // SCORE VARIABLES
+    private int foodsEaten;
+
+    private void updateScore() {
+        foodsEaten++; // counting  the score
+    }
+
+
+    public GameScreen(StateMachine states, InputManager input, FileManager fileManager) {
         this.states = states;
         this.input = input;
+        this.fileManager= fileManager;
+    }
+    private void resetGame() {
+        foodsEaten = 0; // Reset the counter when game starts
+    }
+    private void saveScore() {
+        String playerName = fileManager.getSetting("player_name", "PLAYER1");
+        fileManager.addScore(playerName, foodsEaten);
     }
 
     public void onEnter() {
@@ -33,6 +51,7 @@ public class GameScreen {
         buildMapEasy();
         food = new Food();
         food.respawn(walls, snake, cols, rows);
+        resetGame();//reset score when game starts
     }
 
     public void onExit() { /* nothing for now */ }
@@ -52,15 +71,21 @@ public class GameScreen {
             case ATE_FOOD:
                 snake.grow();
                 food.respawn(walls, snake, cols, rows);
+                updateScore();
                 break;
             case HIT_SELF:
             case HIT_WALL:
+                saveScore();
                 states.set(GameStates.GAME_OVER);
                 break;
             default: /* no-op */ }
     }
 
     public void render(Graphics2D g) {
+        // just shows foods eaten
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 18));
+        g.drawString("Foods: " + foodsEaten, 10, 20);
         // walls
         if (walls != null) {
             g.setColor(Color.DARK_GRAY);
