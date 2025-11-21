@@ -34,7 +34,8 @@ public class FileManager {
         try (ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream(HIGH_SCORES_FILE))) {
 
-            highScores = (List<Score>) ois.readObject();
+            // changed to wrap in new ArrayList so we never keep a SubList
+            highScores = new ArrayList<>((List<Score>) ois.readObject());
             Collections.sort(highScores);
 
         } catch (FileNotFoundException e) {
@@ -53,12 +54,13 @@ public class FileManager {
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(HIGH_SCORES_FILE))) {
 
-            // Keep only top scores
+            // copy into a real ArrayList instead of keeping SubList
             if (highScores.size() > MAX_HIGH_SCORES) {
-                highScores = highScores.subList(0, MAX_HIGH_SCORES);
+                highScores = new ArrayList<>(highScores.subList(0, MAX_HIGH_SCORES));
             }
 
-            oos.writeObject(highScores);
+            // always write a fresh ArrayList copy (defensive)
+            oos.writeObject(new ArrayList<>(highScores));
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -76,9 +78,9 @@ public class FileManager {
         highScores.add(newScore);
         Collections.sort(highScores);
 
-        // Remove excess scores
+        // remove excess scores - wrap subList in new ArrayList
         if (highScores.size() > MAX_HIGH_SCORES) {
-            highScores = highScores.subList(0, MAX_HIGH_SCORES);
+            highScores = new ArrayList<>(highScores.subList(0, MAX_HIGH_SCORES));
         }
 
         saveHighScores();

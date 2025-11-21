@@ -48,15 +48,14 @@ public class InputManager implements KeyListener {
 
     /** Returns the newly requested direction for this frame, or null if none. */
     public Snake.Direction consumeDirectionChange() {
-        if (queuedDir != currentDir) {
-            return queuedDir;
-        }
-        return null;
+        return queuedDir; // changed to always return queuedDir
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
+        System.out.println("KEY PRESSED: " + code);  // debug
+
         if (!pressed.add(code)) return;
 
         switch (code) {
@@ -107,4 +106,13 @@ public class InputManager implements KeyListener {
                 (a == Snake.Direction.LEFT && b == Snake.Direction.RIGHT) ||
                 (a == Snake.Direction.RIGHT && b == Snake.Direction.LEFT);
     }
+
+    public void reset() {
+        pressed.clear();
+        pauseToggled = false;
+        restartRequested = false;
+        currentDir = Snake.Direction.RIGHT;
+        queuedDir = Snake.Direction.RIGHT;
+    }
+
 }
