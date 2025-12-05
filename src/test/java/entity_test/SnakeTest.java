@@ -75,7 +75,7 @@ class SnakeTest {
         assertEquals(1, body.get(0).getX());
         assertEquals(3, body.get(0).getY());
 
-        assertEquals(1, body.get(1).getY());
+        assertEquals(1, body.get(1).getX());
         assertEquals(2, body.get(1).getY());
     }
 

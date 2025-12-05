@@ -72,8 +72,5 @@ class CollisionHandlerTest {
 
         assertEquals(CollisionHandler.Result.ATE_FOOD, result);
 
-        System.out.println("Head: " + snake.getHead().getX() + "," + snake.getHead().getY());
-        System.out.println("Food: " + food.getX() + "," + food.getY());
-        System.out.println("Result: " + result);
     }
 }
