@@ -127,7 +127,7 @@ public class SoundManager {
     }
 
 
-    /** Load .wav file as Clip */
+    /** Load .wav file as Clip (convert to 16-bit PCM if needed) */
     private Clip loadClip(String name) {
         try {
             URL url = getClass().getClassLoader().getResource(name);
@@ -136,10 +136,26 @@ public class SoundManager {
                 return null;
             }
 
+            // original stream (may be 24-bit, etc.)
             AudioInputStream ais = AudioSystem.getAudioInputStream(url);
-            Clip clip = AudioSystem.getClip();
-            clip.open(ais);
+            AudioFormat baseFormat = ais.getFormat();
 
+            // target format: 16-bit signed PCM, same sample rate & channels
+            AudioFormat decodedFormat = new AudioFormat(
+                    AudioFormat.Encoding.PCM_SIGNED,
+                    baseFormat.getSampleRate(),          // keep original sample rate
+                    16,                                  // 16-bit
+                    baseFormat.getChannels(),
+                    baseFormat.getChannels() * 2,        // 2 bytes per sample * channels
+                    baseFormat.getSampleRate(),
+                    false                                // little-endian
+            );
+
+            AudioInputStream decodedAis =
+                    AudioSystem.getAudioInputStream(decodedFormat, ais);
+
+            Clip clip = AudioSystem.getClip();
+            clip.open(decodedAis);
             return clip;
 
         } catch (Exception e) {
@@ -147,4 +163,5 @@ public class SoundManager {
             return null;
         }
     }
+
 }

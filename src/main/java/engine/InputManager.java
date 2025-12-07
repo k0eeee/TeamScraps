@@ -54,8 +54,6 @@ public class InputManager implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-        System.out.println("KEY PRESSED: " + code);  // debug
-
         if (!pressed.add(code)) return;
 
         switch (code) {

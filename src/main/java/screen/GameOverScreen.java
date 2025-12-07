@@ -70,6 +70,9 @@ public class GameOverScreen implements Screen, MouseListener {
     public void onEnter() {
         core.addMouseListener(this);
         core.requestFocusInWindow();
+
+        // make absolutely sure BGM is stopped when we arrive here
+        core.getSound().stopBGM();
     }
 
     @Override

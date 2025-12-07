@@ -141,7 +141,6 @@ public class GameScreen implements Screen { // implementing screen base
             }
 
             fileManager.addScore(playerName, finalScore);
-            System.out.println("Score saved for: " + playerName);
         });
     }
 
@@ -258,6 +257,7 @@ public class GameScreen implements Screen { // implementing screen base
             case HIT_WALL:
                 // trigger effects
                 soundManager.playHit(); // collision sound
+                soundManager.stopBGM();    // stop music immediately on death
                 shakeTime = shakeDuration;   // start shake
                 glitchTime = glitchDuration; // start glitch
                 saveScore();

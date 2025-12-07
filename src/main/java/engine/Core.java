@@ -144,8 +144,6 @@ public class Core extends Canvas implements Runnable {
 
     // for menu button - handling state change
     private void transition(GameStates next) {
-        System.out.println("Transitioning from " + states.get() + " to " + next); // debug
-
         currentScreen().onExit();   // screen handles cleanup
         states.set(next);
         currentScreen().onEnter();  // screen handles setup
